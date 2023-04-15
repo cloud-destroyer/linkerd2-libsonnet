@@ -1,0 +1,24 @@
+diff --git a/lib/linkerd2-libsonnet/gitvendor/cni-plugin/deployment/scripts/install-cni.sh b/lib/linkerd2-libsonnet/gitvendor/cni-plugin/deployment/scripts/install-cni.sh
+index b495ff6bb..52e586582 100755
+--- a/lib/linkerd2-libsonnet/gitvendor/cni-plugin/deployment/scripts/install-cni.sh
++++ b/lib/linkerd2-libsonnet/gitvendor/cni-plugin/deployment/scripts/install-cni.sh
+@@ -279,8 +279,8 @@ sync() {
+       echo "No active CNI configuration file found after $ev event; re-installing in \"interface\" mode"
+       install_cni_conf "${DEFAULT_CNI_CONF_PATH}"
+     fi
+-  elif [ "$ev" = 'CREATE' ]; then
+-    # When the event type is 'CREATE', we check the previously observed SHA (updated
++  elif [ "$ev" = 'CREATE' -o "$ev" = 'MOVED_TO' ]; then
++    # When the event type is 'CREATE' or 'MOVED_TO', we check the previously observed SHA (updated
+     # with each file watch) and compare it against the new file's SHA. If they
+     # differ, it means something has changed.
+     new_sha=$(sha256sum "${filepath}" | while read -r s _; do echo "$s"; done)
+@@ -305,7 +305,7 @@ sync() {
+ # the same system partition, `mv` simply renames, however, that won't be the
+ # case so we don't watch any "moved_to" or "moved_from" events.
+ monitor() {
+-  inotifywait -m "${HOST_CNI_NET}" -e create,delete |
++  inotifywait -m "${HOST_CNI_NET}" -e create,delete,moved_to |
+     while read -r directory action filename; do
+       if [[ "$filename" =~ .*.(conflist|conf)$ ]]; then 
+         echo "Detected change in $directory: $action $filename"

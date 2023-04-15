@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: edge-23.4.1 (#10692)...
+      sha: 6e28aefc774f8746d8cc7536535261da5d135a3c
+      tags:
+      - edge-23.4.1
+    path: .
+  path: gitvendor
+kind: LockConfig
